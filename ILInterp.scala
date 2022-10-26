@@ -70,8 +70,16 @@ object ILInterp {
           } else
             0
         }
-        // case For(x,e1,e2,e3) => // ... need code ...
-
+        case For(x,e1,e2,e3) => {
+          val v1 = interpE(e1)
+          store(x) = v1
+          val v2 = interpE(e2)
+          val vx = store.getOrElse(x, 0)
+          if (vx <= v2) {
+            interpE(e3)
+            interpE(For(x, Add(Num(1), e1), e2, e3))
+          } else 0
+        }
       }
     }
 
