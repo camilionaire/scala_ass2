@@ -17,7 +17,7 @@ object ILInterp {
       }
       e match {
         case Num(n) => n
-        case Var(x) => // ... need code ...   
+        case Var(x) => store.getOrElse(x, 0) // DONE????
         case Add(l,r) => interpE(l) + interpE(r)
         case Sub(l,r) => interpE(l) - interpE(r)
         case Mul(l,r) => interpE(l) * interpE(r)
@@ -29,16 +29,48 @@ object ILInterp {
           else
             vl / vr
         }
-        case Rem(l,r) => // ... need code ...   
-        case Lt(l,r)  => // ... need code ...  
-        case Gt(l,r)  => // ... need code ...  
-        case Eq(l,r)  => // ... need code ...  
-        case If(c,t,e)  => // ... need code ... 
-        case Assgn(x,e) => // ... need code ... 
-        case Write(e)   => // ... need code ... 
-        case Seq(e1,e2) => // ... need code ...
-        case While(c,b) => // ... need code ...
-        case For(x,e1,e2,e3) => // ... need code ...
+        case Rem(l,r) => { 
+          val vl = interpE(l)
+          val vr = interpE(r)
+          if (vr == 0)
+            throw InterpException("divide by zero")
+          else
+            vl % vr
+          } // done?
+        case Lt(l,r)  => {
+          if (interpE(l) < interpE(r)) 1 else 0
+          } // done?
+        case Gt(l,r)  => if (interpE(l) > interpE(r)) 1 else 0// done?
+        case Eq(l,r)  => if (interpE(l) == interpE(r)) 1 else 0 // done?
+        case If(c,t,e)  => {
+          if (interpE(c) > 0) {
+            interpE(t)
+          } else {
+            interpE(e)
+          }
+        } // done?
+        case Assgn(x,e) => {
+          val ve = interpE(e)
+          store(x) = ve
+          ve
+        }
+        case Write(e)   => {
+          val ve = interpE(e)
+          print(ve + "\n")
+          ve
+        }
+        case Seq(e1,e2) => {
+          interpE(e1)
+          interpE(e2)
+        }
+        case While(c,b) => {
+          if (interpE(c) > 0) {
+            interpE(b)
+            interpE(While(c,b))
+          } else
+            0
+        }
+        // case For(x,e1,e2,e3) => // ... need code ...
 
       }
     }
