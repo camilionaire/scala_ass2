@@ -35,6 +35,7 @@ class TestILC extends FunSuite {
     assertResult(-3){ILComp("(- 0 3)")}
     assertResult(12){ILComp("(* 6 2)")}
     assertResult(12){ILComp("(/ 24 2)")}
+    assertResult(1){ILComp("(% 25 4)")}
     intercept[Exception]{ILComp("(/ 7 0)")}
   }
 
@@ -43,36 +44,36 @@ class TestILC extends FunSuite {
     assertResult(0){ILComp("(== 0 2)")}
   }
 
-  test("if result") {
-    assertResult(0){ILComp("(if 1 0 1)")}
-    assertResult(0){ILComp("(if 0 1 0)")}
-    assertResult(0){ILComp("(if 2 0 1)")}
-  }
+  // test("if result") {
+  //   assertResult(0){ILComp("(if 1 0 1)")}
+  //   assertResult(0){ILComp("(if 0 1 0)")}
+  //   assertResult(0){ILComp("(if 2 0 1)")}
+  // }
   
-  test("if evaluates only one branch") {
-    assertConsoleOutput("0\n", "(if 0 (write 1) (write 0))")
-    assertConsoleOutput("0\n", "(if 1 (write 0) (write 1))")
-  }
+  // test("if evaluates only one branch") {
+  //   assertConsoleOutput("0\n", "(if 0 (write 1) (write 0))")
+  //   assertConsoleOutput("0\n", "(if 1 (write 0) (write 1))")
+  // }
   
-  test("simple assignments") {
-    assertResult(0){ILComp("(:= s s)")}
-    assertResult(1){ILComp("(:= s 1)")}
-    assertResult(1){ILComp("(:= s (+ s 1))")}
-  }
+  // test("simple assignments") {
+  //   assertResult(0){ILComp("(:= s s)")}
+  //   assertResult(1){ILComp("(:= s 1)")}
+  //   assertResult(1){ILComp("(:= s (+ s 1))")}
+  // }
   
-  test("write") {
-    assertConsoleOutput("3\n", "(write 3)")
-    assertConsoleOutput("2\n1\n", "(seq (write 2) (write 1))")
-  }
+  // test("write") {
+  //   assertConsoleOutput("3\n", "(write 3)")
+  //   assertConsoleOutput("2\n1\n", "(seq (write 2) (write 1))")
+  // }
 
-  test("while returns 0") {
-    assertResult(0){ILComp("(while 0 0)")}
-    assertResult(0){ILComp("(seq (:= s 3) (while s (:= s (- s 1))))")}
-  }
+  // test("while returns 0") {
+  //   assertResult(0){ILComp("(while 0 0)")}
+  //   assertResult(0){ILComp("(seq (:= s 3) (while s (:= s (- s 1))))")}
+  // }
   
-  test("while + assignment + write") {
-    assertConsoleOutput("3\n2\n1\n",
-      "(seq (:= s 3) (while s (seq (write s) (:= s (- s 1)))))")
-  }
+  // test("while + assignment + write") {
+  //   assertConsoleOutput("3\n2\n1\n",
+  //     "(seq (:= s 3) (while s (seq (write s) (:= s (- s 1)))))")
+  // }
 
 }
