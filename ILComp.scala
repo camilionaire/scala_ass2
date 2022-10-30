@@ -47,23 +47,24 @@ object ILComp {
       val p = p1 ::: p2 ::: (Bop(AOP.Rem,tmp,s1,s2)::Nil)
       (p, Name(tmp))
     }
-
-    // case Lt(e1,e2) => {
-    //   val tmp = newTemp()
-    //   val lab = newLabel()
-    //   val (p1,s1) = compile(e1) 
-    //   val (p2,s2) = compile(e2)
-    //   val p = p1 ::: p2 ::: // ... need code ...   
-    //   (p, Name(tmp))
-    // }
-    // case Gt(e1,e2) => {
-    //   val tmp = newTemp()
-    //   val lab = newLabel()
-    //   val (p1,s1) = compile(e1) 
-    //   val (p2,s2) = compile(e2)
-    //   val p = p1 ::: p2 ::: // ... need code ...   
-    //   (p, Name(tmp))
-    // }
+    case Lt(e1,e2) => {
+      val tmp = newTemp()
+      val lab = newLabel()
+      val (p1,s1) = compile(e1) 
+      val (p2,s2) = compile(e2)
+      val p = p1 ::: p2 ::: (Mov(tmp, Const(1))::
+        CJump(ROP.Lt,s1,s2,lab)::Mov(tmp, Const(0))::Label(lab)::Nil)
+      (p, Name(tmp))
+    }
+    case Gt(e1,e2) => {
+      val tmp = newTemp()
+      val lab = newLabel()
+      val (p1,s1) = compile(e1) 
+      val (p2,s2) = compile(e2)
+      val p = p1 ::: p2 ::: (Mov(tmp, Const(1))::
+        CJump(ROP.Gt,s1,s2,lab)::Mov(tmp, Const(0))::Label(lab)::Nil)
+      (p, Name(tmp))
+    }
     case Eq(e1,e2) => {
       val tmp = newTemp() // this is a string i think?
       val lab = newLabel() // this is an int
@@ -73,32 +74,41 @@ object ILComp {
         CJump(ROP.Eq,s1,s2,lab)::Mov(tmp, Const(0))::Label(lab)::Nil)
       (p, Name(tmp))
     }
-    // case If(c,t,f) => {
-    //   val tmp = newTemp()
-    //   val lab1 = newLabel()
-    //   val lab2 = newLabel()
-    //   val (pc,sc) = compile(c) 
-    //   val (pt,st) = compile(t) 
-    //   val (pf,sf) = compile(f)
-    //   // ... need code ...
-    //   (p, Name(tmp))
-    // }
-    // case Assgn(x,e) => // ... need code ...
-
-    // case Write(e)   => // ... need code ...
-
-    // case Seq(e1,e2) => {
-    //   val (p1,s1) = compile(e1) 
-    //   val (p2,s2) = compile(e2)
-    //   (p1 ::: p2, s2)
-    // }
-    // case While(c,b) => {
-    //   val lab1 = newLabel()
-    //   val lab2 = newLabel()
-    //   val (pc,sc) = compile(c)
-    //   val (pb,sb) = compile(b)
-    //   // ... need code ...
-    // }
+    case If(c,t,f) => {
+      val tmp = newTemp()
+      val lab1 = newLabel()
+      val lab2 = newLabel()
+      val (pc,sc) = compile(c) 
+      val (pt,st) = compile(t) 
+      val (pf,sf) = compile(f)
+      val p = pc ::: (CJump(ROP.Eq, sc, Const(0),lab1)::Nil) ::: 
+        pt ::: (Jump(lab2)::Label(lab1)::Nil) ::: pf ::: (Label(lab2)::Nil)
+      (p, Name(tmp))
+    }
+    case Assgn(x,e) => {
+      val tmp = newTemp()
+      val (pe, se) = compile(e)
+      val p = pe ::: (Mov(x, se)::Mov(tmp, se)::Nil)
+      (p, Name(tmp))
+    }
+    case Write(e)   => {
+      val (pe, se) = compile(e)
+      (pe ::: (Print(se)::Nil), se)
+    }
+    case Seq(e1,e2) => { // this was already here... i think?
+      val (p1,s1) = compile(e1) 
+      val (p2,s2) = compile(e2)
+      (p1 ::: p2, s2)
+    }
+    case While(c,b) => {
+      val lab1 = newLabel()
+      val lab2 = newLabel()
+      val (pc,sc) = compile(c)
+      val (pb,sb) = compile(b)
+      val p = (Label(lab1)::Nil) ::: pc ::: (CJump(ROP.Eq,sc,Const(0),lab2)::Nil) :::
+        pb ::: (Jump(lab1) :: Label(lab2)::Nil)
+      (p, Const(0))
+    }
 
     // case For(x,e1,e2,e3) => // ... need code ... 
   }
