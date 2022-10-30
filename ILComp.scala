@@ -109,8 +109,15 @@ object ILComp {
         pb ::: (Jump(lab1) :: Label(lab2)::Nil)
       (p, Const(0))
     }
-
-    // case For(x,e1,e2,e3) => // ... need code ... 
+    // was completely empty, am working on it.
+    // case For(x,e1,e2,e3) => {
+    //   val lab1 = newLabel()
+    //   val lab2 = newLabel()
+    //   val (p1,s1) = compile(e1)
+    //   val (p2,s2) = compile(e2)
+    //   val (p3,s3) = compile(e3)
+    //   val p = (Label(lab1)::Nil) :::
+    // }
   }
 
   def newLabel() = {
