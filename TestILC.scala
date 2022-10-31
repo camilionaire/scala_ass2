@@ -52,6 +52,7 @@ class TestILC extends FunSuite {
     assertResult(0){ILComp("(if 1 0 1)")}
     assertResult(0){ILComp("(if 0 1 0)")}
     assertResult(0){ILComp("(if 2 0 1)")}
+    assertResult(1){ILComp("(if 2 1 0)")}
   }
   
   // don't have a write yet...

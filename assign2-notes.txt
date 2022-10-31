@@ -1,0 +1,26 @@
+Name: Camilo Schaser-Hughes
+Date: October 31, 2022
+Class: CS 558 Programming Languages
+Prof. Jingke Li
+
+Assignment #2
+
+I was able to complete the assignment and all of the pieces.  It went pretty 
+well. At first, the interpreter was fairly easy.  Probably going to ask in
+class if I did the while loop alright or if need to change it.  Initially did
+the for loop with a recursive for loop call but realized that it wasn't doing
+what the directions were saying that it should.  Eventually ended up writing
+it as a modified while loop, but even that has the weird conditional of
+(e2 - x) > -1 instead of (e2-x) >= 0 which I wasn't sure how to do.
+It passes the tests but I still may go back to it.
+
+The compiler was really hard.  The first 5 were just copy and paste offering
+up a false sense of confidence.  The second that I got to the comparative
+operators though, I realized I didn't quite understand what was going on.
+Spent a good chunk of time re-reading the directions as well as all of the
+code that was in the RegIR file, and finally figured it out.  Still was
+a little rocky with the p's vs s's, but eventually got there, good enough
+to submit at least. Once I got to the for loop I had a pretty decent grasp
+on what was going on. I may go back and re-edit / examen my work so re-submit.
+I've already gone over it once and found some spots that weren't covered in
+the testing and left some holes open in my code.
