@@ -110,14 +110,20 @@ object ILComp {
       (p, Const(0))
     }
     // was completely empty, am working on it.
-    // case For(x,e1,e2,e3) => {
-    //   val lab1 = newLabel()
-    //   val lab2 = newLabel()
-    //   val (p1,s1) = compile(e1)
-    //   val (p2,s2) = compile(e2)
-    //   val (p3,s3) = compile(e3)
-    //   val p = (Label(lab1)::Nil) :::
-    // }
+    case For(x,e1,e2,e3) => {
+      val tmp = newTemp()
+      val lab1 = newLabel()
+      val lab2 = newLabel()
+      val (p1,s1) = compile(e1)
+      val (p2,s2) = compile(e2)
+      val (p3,s3) = compile(e3)
+      // first we move s1 into x, then we get the label.
+      val p = p1 ::: (Mov(x,s1)::Nil) ::: (Label(lab1)::Nil) ::: p2 ::: 
+        (CJump(ROP.Gt,Name(x),s2,lab2)::Nil) ::: p3 ::: 
+        (Bop(AOP.Add,tmp,Name(x),Const(1))::Nil) :::
+        (Mov(x,Name(tmp))::Nil) ::: (Jump(lab1)::Nil) ::: (Label(lab2)::Nil)
+      (p, Const(0))
+    }
   }
 
   def newLabel() = {
